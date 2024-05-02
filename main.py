@@ -1,16 +1,35 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import socket
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def main():
+    host = "127.0.0.1"
+    port = 12345
+
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host, port))
+    server_socket.listen(1)
+
+    print("Сервер запущено...")
+
+    while True:
+        client, addr = server_socket.accept()
+        print(f"З’єднано з {addr}")
+
+        while True:
+            message = client.recv(1024).decode()
+            print(f"Клієнт: {message}")
+
+            if message.strip().lower() == "exit":
+                break
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+            reply = input("Відповідь: ")
+            client.send(reply.encode())
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
+        client.close()
+
+
+if __name__ == "__main__":
+    main()
